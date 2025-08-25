@@ -1,6 +1,4 @@
-def main():
-    print("Hello from mcp-pdf-reader!")
-
+from mcp_pdf_reader.server import run
 
 if __name__ == "__main__":
-    main()
+    run()

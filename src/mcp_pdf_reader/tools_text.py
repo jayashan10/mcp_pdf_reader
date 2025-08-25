@@ -1,23 +1,18 @@
-#!/usr/bin/env python3
-
-import json
 import logging
-import os
 import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+from io import BytesIO
 
 import fitz  # PyMuPDF
 import pytesseract
-from fastmcp import FastMCP
+
+from .app import mcp
 from PIL import Image
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("pdf-reader-server")
-
-# Initialize FastMCP server
-mcp = FastMCP("PDF Reader Server")
 
 def validate_file_path(file_path: str) -> Path:
     """Validate that the file path exists and is a PDF"""
@@ -489,5 +484,3 @@ def analyze_pdf_structure(file_path: str) -> Dict[str, Any]:
             "file_path": file_path
         }
 
-if __name__ == "__main__":
-    mcp.run()

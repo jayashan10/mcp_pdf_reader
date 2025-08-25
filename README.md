@@ -61,8 +61,7 @@ cd mcp-pdf-reader-server
 
 3. **Initialize and install with UV:**
 ```bash
-# Copy the files (pdf_reader_server.py and pyproject.toml)
-# Then install dependencies
+# Install dependencies
 uv sync
 ```
 
@@ -90,17 +89,18 @@ pip install fastmcp PyMuPDF pytesseract Pillow
 
 ### Running the Server
 
-With UV:
+With the console script:
 ```bash
-uv run python pdf_reader_server.py
+mcp-pdf-reader
 ```
 
-Or if you have the environment activated:
+Or using Python directly:
 ```bash
-python pdf_reader_server.py
+python -m mcp_pdf_reader.server
 ```
 
-The server will start and listen for MCP requests on stdin/stdout.
+The server will start and listen for MCP requests on stdin/stdout. Set `PDF_BASE_DIR`
+to the directory containing PDFs before running.
 
 ### Available Tools
 
@@ -119,7 +119,28 @@ Extract text content from PDF pages.
 }
 ```
 
-#### 2. `extract_pdf_images`
+#### 2. `render_pdf_page`
+Render a single PDF page to an image file.
+
+**Parameters:**
+- `file_path` (string, required)
+- `page` (int, required, 1-based)
+- `dpi` (int, optional, default 200)
+- `fmt` (string, optional, `png` or `jpeg`)
+- `output_dir` (string, optional)
+- `return_base64` (boolean, default `false`)
+
+**Example:**
+```json
+{
+  "file_path": "/path/to/document.pdf",
+  "page": 1,
+  "dpi": 300,
+  "fmt": "png"
+}
+```
+
+#### 3. `extract_pdf_images`
 Extract all images from a PDF file.
 
 **Parameters:**
@@ -136,7 +157,7 @@ Extract all images from a PDF file.
 }
 ```
 
-#### 3. `read_pdf_with_ocr`
+#### 4. `read_pdf_with_ocr`
 Extract text from both regular text and images using OCR.
 
 **Parameters:**
@@ -160,13 +181,13 @@ Extract text from both regular text and images using OCR.
 - `spa` - Spanish
 - `eng+fra` - Multiple languages
 
-#### 4. `get_pdf_info`
+#### 5. `get_pdf_info`
 Get comprehensive metadata and statistics about a PDF.
 
 **Parameters:**
 - `file_path` (string, required): Path to the PDF file
 
-#### 5. `analyze_pdf_structure`
+#### 6. `analyze_pdf_structure`
 Analyze the structure and content distribution of a PDF.
 
 **Parameters:**
@@ -181,36 +202,8 @@ Add this to your `claude_desktop_config.json`:
 {
   "mcpServers": {
     "pdf-reader": {
-      "command": "uv",
-      "args": ["run", "python", "/path/to/your/pdf_reader_server.py"],
-      "cwd": "/path/to/your/mcp-pdf-reader-server"
-    }
-  }
-}
-```
-
-### With Virtual Environment
-```json
-{
-  "mcpServers": {
-    "pdf-reader": {
-      "command": "/path/to/your/.venv/bin/python",
-      "args": ["/path/to/your/pdf_reader_server.py"]
-    }
-  }
-}
-```
-
-### System Python
-```json
-{
-  "mcpServers": {
-    "pdf-reader": {
-      "command": "python",
-      "args": ["/path/to/your/pdf_reader_server.py"],
-      "env": {
-        "PYTHONPATH": "/path/to/your/.venv/lib/python3.x/site-packages"
-      }
+      "command": "mcp-pdf-reader",
+      "args": []
     }
   }
 }
@@ -317,14 +310,14 @@ Add this to your `claude_desktop_config.json`:
 
 ### Debug Mode
 
-Run with debug logging using UV:
+Run with debug logging using the console script:
 ```bash
-PYTHONUNBUFFERED=1 uv run python pdf_reader_server.py
+PYTHONUNBUFFERED=1 mcp-pdf-reader
 ```
 
 Or with regular Python:
 ```bash
-PYTHONUNBUFFERED=1 python pdf_reader_server.py
+PYTHONUNBUFFERED=1 python -m mcp_pdf_reader.server
 ```
 
 ### Testing OCR
